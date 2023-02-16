@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <numeric>
 #include <cmath>
 #include <iostream>
 #include <map>
@@ -10,6 +11,7 @@
 using namespace std;
 
 const int MAX_RESULT_DOCUMENT_COUNT = 5;
+const double EPSILON = 1e-6;
 
 string ReadLine() {
     string s;
@@ -84,7 +86,7 @@ public:
 
         sort(matched_documents.begin(), matched_documents.end(),
             [](const Document& lhs, const Document& rhs) {
-                if (abs(lhs.relevance - rhs.relevance) < 1e-6) {
+                if (abs(lhs.relevance - rhs.relevance) < EPSILON) {
                     return lhs.rating > rhs.rating;
                 }
                 else {
@@ -98,12 +100,14 @@ public:
     }
 
     vector<Document> FindTopDocuments(const string& raw_query, DocumentStatus status) const {
-        return FindTopDocuments(raw_query, [&status](int document_id, DocumentStatus status_new, int rating) {return status_new == status; });
+        return FindTopDocuments(raw_query,
+            [&status](int id, const DocumentStatus& documentStatus, int raring) {
+                return documentStatus == status;
+            });
     }
 
     vector<Document> FindTopDocuments(const string& raw_query) const {
-        return FindTopDocuments(raw_query,
-            [](int document_id, const DocumentStatus& status, int rating) {return status == DocumentStatus::ACTUAL;; });
+        return FindTopDocuments(raw_query, DocumentStatus::ACTUAL);
     }
 
     int GetDocumentCount() const {
@@ -163,9 +167,7 @@ private:
             return 0;
         }
         int rating_sum = 0;
-        for (const int rating : ratings) {
-            rating_sum += rating;
-        }
+        rating_sum = accumulate(ratings.begin(), ratings.end(), 0);
         return rating_sum / static_cast<int>(ratings.size());
     }
 
@@ -266,8 +268,8 @@ int main() {
     for (const Document& document : search_server.FindTopDocuments("пушистый ухоженный кот"s)) {
         PrintDocument(document);
     }
-    cout << "ACTUAL:"s << endl;
-    for (const Document& document : search_server.FindTopDocuments("пушистый ухоженный кот"s, [](int document_id, DocumentStatus status, int rating) { return status == DocumentStatus::ACTUAL; })) {
+    cout << "BANNED:"s << endl;
+    for (const Document& document : search_server.FindTopDocuments("пушистый ухоженный кот"s, DocumentStatus::BANNED)) {
         PrintDocument(document);
     }
     cout << "Even ids:"s << endl;
