@@ -1,21 +1,40 @@
 #include "request_queue.h"
 
 RequestQueue::RequestQueue(const SearchServer& search_server)
-	: search_server_(search_server) {}
-
-std::vector<Document> RequestQueue::AddFindRequest(const std::string& raw_query, DocumentStatus status)
-{
-	return AddFindRequest(raw_query, [status](int document_id, DocumentStatus document_status, int rating) {
-		return document_status == status;
-		});
+    : search_server_(search_server)
+    , no_results_requests_(0)
+    , current_time_(0) {
 }
 
-std::vector<Document> RequestQueue::AddFindRequest(const std::string& raw_query)
-{
-	return AddFindRequest(raw_query, DocumentStatus::ACTUAL);
+std::vector<Document> RequestQueue::AddFindRequest(const std::string& raw_query, DocumentStatus status) {
+    const auto result = search_server_.FindTopDocuments(raw_query, status);
+    AddRequest(static_cast<int>(result.size()));
+    return result;
 }
 
-int RequestQueue::GetNoResultRequests() const
-{
-	return empty_count_;
+std::vector<Document> RequestQueue::AddFindRequest(const std::string& raw_query) {
+    const auto result = search_server_.FindTopDocuments(raw_query);
+    AddRequest(static_cast<int>(result.size()));
+    return result;
+}
+
+int RequestQueue::GetNoResultRequests() const {
+    return no_results_requests_;
+}
+
+void RequestQueue::AddRequest(int results_num) {
+    // íîâûé çàïðîñ - íîâàÿ ñåêóíäà
+    ++current_time_;
+    // óäàëÿåì âñå ðåçóëüòàòû ïîèñêà, êîòîðûå óñòàðåëè
+    while (!requests_.empty() && min_in_day_ <= current_time_ - requests_.front().timestamp) {
+        if (0 == requests_.front().results) {
+            --no_results_requests_;
+        }
+        requests_.pop_front();
+    }
+    // ñîõðàíÿåì íîâûé ðåçóëüòàò ïîèñêà
+    requests_.push_back({ current_time_, results_num });
+    if (0 == results_num) {
+        ++no_results_requests_;
+    }
 }
