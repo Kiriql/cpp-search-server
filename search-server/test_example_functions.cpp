@@ -5,32 +5,32 @@ void AddDocument(SearchServer& search_server, int document_id, const std::string
         search_server.AddDocument(document_id, document, status, ratings);
     }
     catch (const std::exception& e) {
-        std::cout << "Îøèáêà äîáàâëåíèÿ äîêóìåíòà "s << document_id << ": "s << e.what() << std::endl;
+        std::cout << "Ошибка добавления документа "s << document_id << ": "s << e.what() << std::endl;
     }
 }
 
 void FindTopDocuments(const SearchServer& search_server, const std::string& raw_query) {
-    std::cout << "Ðåçóëüòàòû ïîèñêà ïî çàïðîñó: "s << raw_query << std::endl;
+    std::cout << "Резултаты поиска по запросу: "s << raw_query << std::endl;
     try {
         for (const Document& document : search_server.FindTopDocuments(raw_query)) {
             PrintDocument(document);
         }
     }
     catch (const std::exception& e) {
-        std::cout << "Îøèáêà ïîèñêà: "s << e.what() << std::endl;
+        std::cout << "Ошибка поиска: "s << e.what() << std::endl;
     }
 }
 
 void MatchDocuments(const SearchServer& search_server, const std::string& query) {
     try {
-        std::cout << "Ìàò÷èíã äîêóìåíòîâ ïî çàïðîñó: "s << query << std::endl;
+        std::cout << "Матчинг документов по запросу: "s << query << std::endl;
         for (const int document_id : search_server) {
             const auto [words, status] = search_server.MatchDocument(query, document_id);
             PrintMatchDocumentResult(document_id, words, status);
         }
     }
     catch (const std::exception& e) {
-        std::cout << "Îøèáêà ìàò÷èíãà äîêóìåíòîâ íà çàïðîñ "s << query << ": "s << e.what() << std::endl;
+        std::cout << "Ошибка матчинга документов на запрос "s << query << ": "s << e.what() << std::endl;
     }
 }
 

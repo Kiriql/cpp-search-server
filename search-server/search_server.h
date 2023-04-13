@@ -91,7 +91,7 @@ SearchServer::SearchServer(const StringContainer& stop_words)
     : stop_words_(MakeUniqueNonEmptyStrings(stop_words))
 {
     if (!all_of(stop_words_.begin(), stop_words_.end(), IsValidWord)) {
-        throw std::invalid_argument("ñëîâî ñîäåðæèò ñïåöèàëüíûé ñèìâîë"s);
+        throw std::invalid_argument("Слово содержит специальный символ"s);
     }
 }
 

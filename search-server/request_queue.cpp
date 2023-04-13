@@ -23,16 +23,14 @@ int RequestQueue::GetNoResultRequests() const {
 }
 
 void RequestQueue::AddRequest(int results_num) {
-    // íîâûé çàïðîñ - íîâàÿ ñåêóíäà
     ++current_time_;
-    // óäàëÿåì âñå ðåçóëüòàòû ïîèñêà, êîòîðûå óñòàðåëè
     while (!requests_.empty() && min_in_day_ <= current_time_ - requests_.front().timestamp) {
         if (0 == requests_.front().results) {
             --no_results_requests_;
         }
         requests_.pop_front();
     }
-    // ñîõðàíÿåì íîâûé ðåçóëüòàò ïîèñêà
+
     requests_.push_back({ current_time_, results_num });
     if (0 == results_num) {
         ++no_results_requests_;
