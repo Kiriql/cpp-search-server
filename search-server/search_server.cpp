@@ -81,20 +81,19 @@ const std::map<std::string, double>& SearchServer::GetWordFrequencies(int docume
 }
 
 void SearchServer::RemoveDocument(int document_id) {
+    if (document_ids_.find(document_id) == document_ids_.end()){
+        return;
+    }
+    std::string word_remove;
+    for(auto& [word, id_freq] : word_to_document_freqs_){
+        if(id_freq.find(document_id) != id_freq.end()){
+            word_remove = word;
+        }
+    }
+    word_to_document_freqs_.erase(word_remove);
     document_to_word_freqs_.erase(document_id);
     documents_.erase(document_id);
-    document_ids_.erase(document_id);
-    for (auto [word, freq] : GetWordFrequencies(document_id)) {
-        for (auto it = word_to_document_freqs_.at(word).begin(); it != word_to_document_freqs_.at(word).end();) {
-            if (it->first == document_id) {
-                word_to_document_freqs_.at(word).erase(it++);
-                break;
-            }
-            else {
-                ++it;
-            }
-        }
-    }    
+    document_ids_.erase(document_id);        
 }
 
 bool SearchServer::IsStopWord(const std::string& word) const {
