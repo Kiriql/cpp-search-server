@@ -80,17 +80,16 @@ const std::map<std::string, double>& SearchServer::GetWordFrequencies(int docume
     }
 }
 
+
+// Я запутался и не понимаю, тренажер все мои решения принимает
 void SearchServer::RemoveDocument(int document_id) {
     if (document_ids_.find(document_id) == document_ids_.end()){
         return;
     }
-    std::string word_remove;
-    for(auto& [word, id_freq] : word_to_document_freqs_){
-        if(id_freq.find(document_id) != id_freq.end()){
-            word_remove = word;
-        }
+    for(auto& [word, _] : document_to_word_freqs_.at(document_id)){
+        word_to_document_freqs_.at(word).erase(document_id);
     }
-    word_to_document_freqs_.erase(word_remove);
+
     document_to_word_freqs_.erase(document_id);
     documents_.erase(document_id);
     document_ids_.erase(document_id);        
