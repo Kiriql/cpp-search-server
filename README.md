@@ -1,6 +1,6 @@
 # SearchServer
 
-## Educational project
+## *Educational project*
 SearchServer is a system for searching documents using keywords.
 
 Main functions:
