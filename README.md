@@ -1,29 +1,29 @@
 # SearchServer
 
-## *Educational project*
-SearchServer is a system for searching documents using keywords.
+## Учебный проект
+SearchServer - система поиска документов по ключевым словам.
 
-Main functions:
+Основные функции:
 
-- ranking search results according to the TF-IDF statistical measure;
-- processing of stop words (they are not taken into account by the search engine and do not affect search results);
-- processing negative keywords (documents containing negative keywords will not be included in search results);
-- creation and processing of a request queue;
-- removal of duplicate documents;
-- pagination of search results;
-- ability to work in multi-threaded mode;
+- ранжирование результатов поиска по статистической мере TF-IDF;
+- обработка стоп-слов (не учитываются поисковой системой и не влияют на результаты поиска);
+- обработка минус-слов (документы, содержащие минус-слова, не будут включены в результаты поиска);
+- создание и обработка очереди запросов;
+- удаление дубликатов документов;
+- постраничное разделение результатов поиска;
+- возможность работы в многопоточном режиме;
 
-## Principle of operation
-Creating an instance of the SearchServer class. A string with stop words separated by spaces is passed to the constructor. Instead of a string, you can pass an arbitrary container (with sequential access to elements and the ability to use it in a for-range loop)
+## Принцип работы
+Создание экземпляра класса SearchServer. В конструктор передаётся строка с стоп-словами, разделенными пробелами. Вместо строки можно передавать произвольный контейнер (с последовательным доступом к элементам с возможностью использования в for-range цикле)
 
-The AddDocument method adds documents for search. The document id, status, rating, and the document itself in string format are passed to the method.
+С помощью метода AddDocument добавляются документы для поиска. В метод передаётся id документа, статус, рейтинг, и сам документ в формате строки.
 
-The FindTopDocuments method returns a vector of documents according to the matches of the passed keywords. The results are sorted by the TF-IDF statistical measure. Additional filtering of documents by id, status and rating is possible. The method is implemented in both single-threaded and multi-threaded versions.
+Метод FindTopDocuments возвращает вектор документов, согласно соответствию переданным ключевым словам. Результаты отсортированы по статистической мере TF-IDF. Возможна дополнительная фильтрация документов по id, статусу и рейтингу. Метод реализован как в однопоточной так и в многопоточной версии.
 
-The RequestQueue class implements a queue of requests to a search server that stores search results.
+Класс RequestQueue реализует очередь запросов к поисковому серверу с сохранением результатов поиска.
 
-## Assembly and installation
-Build using any IDE or build from the command line
+## Сборка и установка
+Сборка с помощью любой IDE либо сборка из командной строки
 
-## System requirements
-C++ compiler supporting C++17 standard or later
+## Системные требования
+Компилятор С++ с поддержкой стандарта C++17 или новее
